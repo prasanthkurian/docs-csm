@@ -6,19 +6,33 @@
 > - If any problems are encountered and the procedure or command output does not provide relevant guidance, see
 >   [Relevant troubleshooting links for upgrade-related issues](README.md#relevant-troubleshooting-links-for-upgrade-related-issues).
 
-Stage 0 has several critical procedures which prepares and verify if the environment is ready for upgrade. First, the latest documentation RPM is installed; it includes
-critical install scripts used in the upgrade procedure.
-The management network configuration is also upgraded. Towards the end, prerequisite checks are performed to ensure that the upgrade is ready to proceed. Finally, a
-backup of Workload Manager configuration data and files is created. Once complete, the upgrade proceeds to Stage 1.
+Stage 0 has several critical procedures which prepare the environment and verify if the environment is ready for the upgrade.
 
+- [Start typescript](#start-typescript)
 - [Stage 0.1 - Prepare assets](#stage-01---prepare-assets)
   - [Direct download](#direct-download)
   - [Manual copy](#manual-copy)
-- [Stage 0.2 - Upgrade management network](#stage-02---upgrade-management-network)
-  - [Verify that switches have 1.2 configuration in place](#verify-that-switches-have-12-configuration-in-place)
-- [Stage 0.3 - Prerequisites check](#stage-03---prerequisites-check)
+- [Stage 0.2 - Prerequisites](#stage-02---prerequisites)
+- [Stage 0.3 - Customize the new NCN image and update NCN personalization configurations](#stage-03---customize-the-new-ncn-image-and-update-ncn-personalization-configurations)
+  - [Standard upgrade](#standard-upgrade)
+  - [CSM-only system upgrade](#csm-only-system-upgrade)
 - [Stage 0.4 - Backup workload manager data](#stage-04---backup-workload-manager-data)
+- [Stop typescript](#stop-typescript)
 - [Stage completed](#stage-completed)
+
+## Start typescript
+
+1. (`ncn-m001#`) If a typescript session is already running in the shell, then first stop it with the `exit` command.
+
+1. (`ncn-m001#`) Start a typescript.
+
+    ```bash
+    script -af /root/csm_upgrade.$(date +%Y%m%d_%H%M%S).stage_0.txt
+    export PS1='\u@\H \D{%Y-%m-%d} \t \w # '
+    ```
+
+If additional shells are opened during this procedure, then record those with typescripts as well. When resuming a procedure
+after a break, always be sure that a typescript is running before proceeding.
 
 ## Stage 0.1 - Prepare assets
 
@@ -29,16 +43,53 @@ backup of Workload Manager configuration data and files is created. Once complet
    CSM_REL_NAME=csm-${CSM_RELEASE}
    ```
 
-1. If there are space concerns on the node, then add an `rbd` device on the node for the CSM tarball.
+1. (`ncn-m001#`) Install the latest `docs-csm` RPM.
 
-    See [Create a storage pool](../operations/utility_storage/Alternate_Storage_Pools.md#create-a-storage-pool)
-    and [Create and map an `rbd` device](../operations/utility_storage/Alternate_Storage_Pools.md#create-and-map-an-rbd-device).
+   - If `ncn-m001` has internet access, then use the following commands to download and install the latest documentation.
 
-    **Note:** This same `rbd` device can be remapped to `ncn-m002` later in the upgrade procedure, when the CSM tarball is needed on that node.
-    However, the `prepare-assets.sh` script will delete the CSM tarball in order to free space on the node.
-    If using an `rbd` device, this is not necessary or desirable, as it will require the CSM tarball to be downloaded again later in the
-    procedure. Therefore, **if using an `rbd` device to store the CSM tarball**, then copy the tarball to a different location and point to that location
-    when running the `prepare-assets.sh` script.
+      > **Important:** The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why these commands copy it there.
+
+      ```bash
+      wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/docs-csm/1.3/noarch/docs-csm-latest.noarch.rpm \
+          -O /root/docs-csm-latest.noarch.rpm &&
+      rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
+      ```
+
+   - Otherwise, use the following procedure to download and install the latest documentation.
+
+      1. Download the latest `docs-csm` RPM to an external system and copy it to `ncn-m001`.
+
+         See [Check for latest documentation](../update_product_stream/README.md#check-for-latest-documentation).
+
+      1. (`ncn-m001#`) Copy the documentation RPM to `/root` and install it.
+
+         > **Important:**
+         >
+         > - Replace the `PATH_TO_DOCS_RPM` below with the location of the RPM on `ncn-m001`.
+         > - The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why this command copies it there.
+
+         ```bash
+         cp PATH_TO_DOCS_RPM /root/docs-csm-latest.noarch.rpm &&
+         rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
+         ```
+
+1. (`ncn-m001#`) Create and mount an `rbd` device where the CSM release tarball can be stored.
+
+   1. Initialize the Python virtual environment.
+
+      ```bash
+      tar xvf /usr/share/doc/csm/scripts/csm_rbd_tool.tar.gz -C /opt/cray/csm/scripts/
+      ```
+
+   1. Create and map the `rbd` device.
+
+      **IMPORTANT:** This mounts the `rbd` device at `/etc/cray/upgrade/csm` on `ncn-m001`.
+
+      ```bash
+      source /opt/cray/csm/scripts/csm_rbd_tool/bin/activate
+      python /usr/share/doc/csm/scripts/csm_rbd_tool.py --pool_action create --rbd_action create --target_host ncn-m001
+      deactivate
+      ```
 
 1. Follow either the [Direct download](#direct-download) or [Manual copy](#manual-copy) procedure.
 
@@ -46,16 +97,6 @@ backup of Workload Manager configuration data and files is created. Once complet
    - Alternatively, the [Manual copy](#manual-copy) procedure may be used, which includes manually copying the CSM `tar` file to `ncn-m001`.
 
 ### Direct download
-
-1. (`ncn-m001#`) Download and install the latest documentation RPM.
-
-   > **Important:** The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why this command copies it there.
-
-   ```bash
-   wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2/docs-csm/1.3/noarch/docs-csm-latest.noarch.rpm \
-        -O /root/docs-csm-latest.noarch.rpm &&
-   rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
-   ```
 
 1. (`ncn-m001#`) Set the `ENDPOINT` variable to the URL of the directory containing the CSM release `tar` file.
 
@@ -71,6 +112,10 @@ backup of Workload Manager configuration data and files is created. Once complet
 
    **NOTE** For Cray/HPE internal installs, if `ncn-m001` can reach the internet, then the `--endpoint` argument may be omitted.
 
+   > The `prepare-assets.sh` script will delete the CSM tarball (after expanding it) in order to free up space.
+   > This behavior can be overridden by appending the `--no-delete-tarball-file` argument to the `prepare-assets.sh`
+   > command below.
+
    ```bash
    /usr/share/doc/csm/upgrade/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --endpoint "${ENDPOINT}"
    ```
@@ -79,27 +124,11 @@ backup of Workload Manager configuration data and files is created. Once complet
 
 ### Manual copy
 
-1. Copy the `docs-csm` RPM package and CSM release `tar` file to `ncn-m001`.
+1. Copy the CSM release `tar` file to `ncn-m001`.
 
    See [Update Product Stream](../update_product_stream/README.md).
 
-1. (`ncn-m001#`) Copy the documentation RPM to `/root` and install it.
-
-   > **Important:**
-   >
-   > - Replace the `PATH_TO_DOCS_RPM` below with the location of the RPM on `ncn-m001`.
-   > - The upgrade scripts expect the `docs-csm` RPM to be located at `/root/docs-csm-latest.noarch.rpm`; that is why this command copies it there.
-
-   ```bash
-   cp PATH_TO_DOCS_RPM /root/docs-csm-latest.noarch.rpm &&
-   rpm -Uvh --force /root/docs-csm-latest.noarch.rpm
-   ```
-
 1. (`ncn-m001#`) Set the `CSM_TAR_PATH` variable to the full path to the CSM `tar` file on `ncn-m001`.
-
-   > The `prepare-assets.sh` script will delete the CSM tarball in order to free space on the node.
-   > If using an `rbd` device to store the CSM tarball (or if not wanting the tarball file deleted for other reasons), then be sure to
-   > copy the tarball file to a different location, and set the `CSM_TAR_PATH` to point to this new location.
 
    ```bash
    CSM_TAR_PATH=/path/to/${CSM_REL_NAME}.tar.gz
@@ -107,34 +136,15 @@ backup of Workload Manager configuration data and files is created. Once complet
 
 1. (`ncn-m001#`) Run the script.
 
+   > The `prepare-assets.sh` script will delete the CSM tarball (after expanding it) in order to free up space.
+   > This behavior can be overridden by appending the `--no-delete-tarball-file` argument to the `prepare-assets.sh`
+   > command below.
+
    ```bash
    /usr/share/doc/csm/upgrade/scripts/upgrade/prepare-assets.sh --csm-version ${CSM_RELEASE} --tarball-file "${CSM_TAR_PATH}"
    ```
 
-## Stage 0.2 - Upgrade management network
-
-### Verify that switches have 1.2 configuration in place
-
-1. Log in to each management switch.
-
-1. Examine the text displayed when logging in to the switch.
-
-   Specifically, look for output similar to the following:
-
-   ```text
-   ##################################################################################
-   # CSM version:  1.2
-   # CANU version: 1.6.5
-   ##################################################################################
-   ```
-
-   - Output like the above text means that the switches have a CANU-generated configuration for CSM 1.2 in place. In this case, follow the steps in
-     [Management Network 1.2 to 1.3](../operations/network/management_network/1.2_to_1.3_upgrade.md).
-   - If the banner does NOT contain text like the above, then contact support in order to get `CSM 1.2 switch configuration` applied to the system.
-   - See the [Management Network User Guide](../operations/network/management_network/README.md) for more information on the management network.
-   - With CSM >= 1.2 switch configurations in place, users will only be able to SSH into the switches over the HMN and CMN.
-
-## Stage 0.3 - Prerequisites check
+## Stage 0.2 - Prerequisites
 
 1. (`ncn-m001#`) Set the `SW_ADMIN_PASSWORD` environment variable.
 
@@ -149,9 +159,9 @@ backup of Workload Manager configuration data and files is created. Once complet
 
 1. (`ncn-m001#`) Set the `NEXUS_PASSWORD` variable **only if needed**.
 
-   > **IMPORTANT:** If the password for the local Nexus `admin` account has
-   > been changed from the default `admin123` (not typical), then set the
-   > `NEXUS_PASSWORD` environment variable to the correct `admin` password
+   > **IMPORTANT:** If the password for the local Nexus `admin` account has been
+   > changed from the password set in the `nexus-admin-credential` secret (not typical),
+   > then set the `NEXUS_PASSWORD` environment variable to the correct `admin` password
    > and export it, before running `prerequisites.sh`.
    >
    > For example:
@@ -163,8 +173,8 @@ backup of Workload Manager configuration data and files is created. Once complet
    > export NEXUS_PASSWORD
    > ```
    >
-   > Otherwise, a random 32-character base-64-encoded string will be generated
-   > and updated as the default `admin` password when Nexus is upgraded.
+   > Otherwise, the upgrade will try to use the password in the `nexus-admin-credential`
+   > secret and fail to upgrade Nexus.
 
 1. (`ncn-m001#`) Run the script.
 
@@ -205,11 +215,47 @@ backup of Workload Manager configuration data and files is created. Once complet
    git push
    ```
 
+## Stage 0.3 - Customize the new NCN image and update NCN personalization configurations
+
+There are two possible scenarios. Follow the procedure for the scenario that is applicable to the upgrade being performed.
+
+- [Standard upgrade](#standard-upgrade) - Upgrading CSM on a system that has products installed other than CSM.
+- [CSM-only system upgrade](#csm-only-system-upgrade) - Upgrading CSM only on a CSM-only system **no other products installed or being upgraded**.
+
+**NOTE:** For the standard upgrade, it will not be possible to rebuild NCNs on the current, pre-upgraded CSM version after performing these steps. Rebuilding NCNs will become the same thing as upgrading them.
+
+### Standard upgrade
+
+The procedures for customizing the NCN image and updating NCN personalization configurations are found in the *HPE Cray EX System Software Getting Started Guide S-8000*, section
+"HPE Cray EX Software Upgrade Workflow", subsection "Cray System Management (CSM)".
+
+### CSM-only system upgrade
+
+This upgrade scenario is extremely uncommon in production environments.
+
+1. (`ncn-m001#`) Generate new CFS configuration for the NCNs.
+
+    This script will also leave CFS disabled for the NCNs. CFS will automatically be re-enabled on them as they are rebooted during the upgrade.
+
+    ```bash
+    /usr/share/doc/csm/scripts/operations/configuration/apply_csm_configuration.sh --no-enable
+    ```
+
+    Successful output should end with the following line:
+
+    ```text
+    All components updated successfully.
+    ```
+
 ## Stage 0.4 - Backup workload manager data
 
 To prevent any possibility of losing workload manager configuration data or files, a backup is required. Execute all backup procedures (for the workload manager in use) located in
 the `Troubleshooting and Administrative Tasks` sub-section of the `Install a Workload Manager` section of the
 `HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX`. The resulting backup data should be stored in a safe location off of the system.
+
+## Stop typescript
+
+For any typescripts that were started during this stage, stop them with the `exit` command.
 
 ## Stage completed
 

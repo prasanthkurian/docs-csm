@@ -1,3 +1,26 @@
+#
+# MIT License
+#
+# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
 1.0.x
 1.6.x
 100GBASE-CR2
@@ -59,13 +82,13 @@ Ansible
 AOS-CX
 API
 APIs
+Argo
 Arista
 artifact
 artifact's
 Artifactory
 artifacts
 ArubaOS-CX
-ASes
 ASICs
 backdoor
 backend
@@ -304,7 +327,11 @@ loopback
 loopbacks
 lowercase
 lowercased
+LAN
+LANs
 Luks
+LVM
+LVMs
 macOS
 maneuver
 maneuvers
@@ -553,6 +580,7 @@ V1.20.13
 v1.3
 v1.3.x
 v1.30.16
+v1.3.0
 V1.3.0
 v1.4
 v1.4.
@@ -599,8 +627,11 @@ Zypper
 # Per-file spelling exceptions. Please keep this section sorted in order by filepath, to help make it easier to
 # see if a file already is listed.
 
-- background/ncn_mounts_and_file_systems.md
-Inode
+- background/README.md
+initramFS
+initrd
+overlayFS
+squashFS
 
 - glossary.md
 # To allow 802.3cd/bs
@@ -627,6 +658,13 @@ Init
 - install/README.md
 Alerta
 
+- install/livecd/Boot_LiveCD_USB.md
+Init
+
+- introduction/documentation_conventions.md
+ipsum
+Lorem
+
 - introduction/site_survey.md
 # To allow Site Init
 Init
@@ -636,6 +674,12 @@ LoadBalancer
 
 - operations/network/management_network/1.2_to_1.3_upgrade.md
 VRFs
+
+- operations/network/management_network/aruba/bgp_basic.md
+ASes
+
+- operations/network/management_network/mellanox/bgp_basic.md
+ASes
 
 - operations/network/management_network/upgrade.md
 Preconfig
@@ -662,3 +706,11 @@ Admin
 
 - operations/system_management_health/Configure_Prometheus_Alerta_Alert_Notifications.md
 Alerta
+
+- operations/network/dns/DNS.md
+ExternalDNS
+
+- RELEASE_NOTES.md
+5.x
+Antero
+Expat-15

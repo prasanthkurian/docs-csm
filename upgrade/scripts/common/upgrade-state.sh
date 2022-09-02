@@ -85,7 +85,7 @@ function err_report() {
     #shellcheck disable=SC2155
     local caller="$(caller)"
     local cmd="$BASH_COMMAND"
-    if [[ ! -z $NO_ERROR_TRAP ]]; then
+    if [[ -n $NO_ERROR_TRAP ]]; then
         return 0
     fi
     # add more logging to capture next where exactly the error happened
@@ -115,17 +115,51 @@ function err_report() {
         return 0
     fi
     
-    # force output to console regardless of redirection
-    echo >/dev/tty 
-    echo "[ERROR] - Unexpected errors, check logs: ${LOG_FILE}" >/dev/tty 
+    # check if /dev/tty is available, it is not available when using argo workflows
+    if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
+        # /dev/tty is available and usable
+        # force output to console regardless of redirection
+        echo >/dev/tty 
+        echo "[ERROR] - Unexpected errors, check logs: ${LOG_FILE}" >/dev/tty
+    else
+        # /dev/tty is not available
+        echo
+        echo "[ERROR] - Unexpected errors, check logs: ${LOG_FILE}"
+    fi
     # avoid shell double trap
     NO_ERROR_TRAP=1
 }
 
 function ok_report() {
-    # force output to console regardless of redirection
-    echo >/dev/tty 
-    echo "[OK] - Successfully completed" >/dev/tty
+    # check if /dev/tty is available, it is not available when using argo workflows
+    if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
+        # /dev/tty is available and usable
+        # force output to console regardless of redirection
+        echo >/dev/tty 
+        echo "[OK] - Successfully completed" >/dev/tty
+    else
+        # /dev/tty is not available
+        echo
+        echo "[OK] - Successfully completed"
+    fi
+    # avoid shell double trap
+    NO_ERROR_TRAP=1
+}
+
+function argo_err_report() {
+    #shellcheck disable=SC2155
+    local caller="$(caller)"
+    local cmd="$BASH_COMMAND"
+    if [[ -n $NO_ERROR_TRAP ]]; then
+        return 0
+    fi
+    # add more logging to capture next where exactly the error happened
+    echo "${caller}"
+    echo "${cmd}"
+
+
+    echo
+    echo "[ERROR] - Unexpected errors"
     # avoid shell double trap
     NO_ERROR_TRAP=1
 }

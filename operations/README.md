@@ -5,7 +5,7 @@ The Cray System Management (CSM) operational activities are administrative proce
 The following administrative topics can be found in this guide:
 
 - [CSM product management](#csm-product-management)
-- [Pre-install](#pre-install)
+- [Bare-metal](#bare-metal)
 - [Image management](#image-management)
 - [Boot orchestration](#boot-orchestration)
 - [System power off procedures](#system-power-off-procedures)
@@ -40,6 +40,8 @@ The following administrative topics can be found in this guide:
 
 ## CSM product management
 
+Important procedures for configuring, managing, and validating the CSM environment.
+
 - [Validate CSM Health](validate_csm_health.md)
 - [Configure Keycloak Account](CSM_product_management/Configure_Keycloak_Account.md)
 - [Configure the Cray Command Line Interface (Cray CLI)](configure_cray_cli.md)
@@ -51,11 +53,11 @@ The following administrative topics can be found in this guide:
 - [Post-Install Customizations](CSM_product_management/Post_Install_Customizations.md)
 - [Validate Signed RPMs](CSM_product_management/Validate_Signed_RPMs.md)
 
-## Pre-install
+## Bare-metal
 
 General information on what needs to be done before the initial install of CSM.
 
-- [Pre-Install Steps](bare_metal/Bare-Metal.md)
+- [Bare-Metal Steps](bare_metal/Bare-Metal.md)
 - [Change Air-Cooled BMC Credentials](bare_metal/Change_River_BMC_Credentials.md)
 - [Change ServerTech PDU Credentials](bare_metal/Change_ServerTech_PDU_Credentials.md)
 
@@ -208,6 +210,7 @@ The Configuration Framework Service \(CFS\) is available on systems for remote e
   - [View Configuration Session Logs](configuration_management/View_Configuration_Session_Logs.md)
   - [Troubleshoot Ansible Play Failures in CFS Sessions](configuration_management/Troubleshoot_Ansible_Play_Failures_in_CFS_Sessions.md)
   - [Troubleshoot CFS Session Failing to Complete](configuration_management/Troubleshoot_CFS_Session_Failing_to_Complete.md)
+  - [Troubleshoot CFS Sessions Failing to Start](configuration_management/Troubleshoot_CFS_Sessions_Failing_to_Start.md)
 - [Configuration Management with the CFS Batcher](configuration_management/Configuration_Management_with_the_CFS_Batcher.md)
 - [CFS Flow Diagrams](configuration_management/CFS_Flow_Diagrams.md)
 - [Configuration Management of System Components](configuration_management/Configuration_Management_of_System_Components.md)
@@ -224,6 +227,7 @@ The Configuration Framework Service \(CFS\) is available on systems for remote e
 - [Write Ansible Code for CFS](configuration_management/Write_Ansible_Code_for_CFS.md)
   - [Target Ansible Tasks for Image Customization](configuration_management/Target_Ansible_Tasks_for_Image_Customization.md)
 - [CFS Key Management](configuration_management/CFS_Key_Management.md)
+- [Pre-Boot Configuration of NCN Images](configuration_management/Pre_Boot_Configuration_of_NCN_Images.md)
 
 ## Kubernetes
 
@@ -259,6 +263,7 @@ As a result, the system's micro-services are modular, resilient, and can be upda
   - [Restore Postgres](kubernetes/Restore_Postgres.md)
   - [Disaster Recovery for Postgres](kubernetes/Disaster_Recovery_Postgres.md)
   - [View Postgres Information for System Databases](kubernetes/View_Postgres_Information_for_System_Databases.md)
+- [Kyverno policy management](kubernetes/Kyverno.md)
 - [Troubleshoot Intermittent HTTP 503 Code Failures](kubernetes/Troubleshoot_Intermittent_503s.md)
 
 ## Package repository management
@@ -531,6 +536,9 @@ Overview of the several different networks supported by the HPE Cray EX system.
 - [Access to System Management Services](network/Access_to_System_Management_Services.md)
 - [Default IP Address Ranges](network/Default_IP_Address_Ranges.md)
 - [Connect to the HPE Cray EX Environment](network/Connect_to_the_HPE_Cray_EX_Environment.md)
+- [Connect to Switch over USB-Serial Cable](network/Connect_to_Switch_Over_USB_Serial_Cable.md)
+- [Create a CSM Configuration Upgrade Plan](network/Create_a_CSM_Configuration_Upgrade_Plan.md)
+- [Gateway Testing](network/Gateway_Testing.md)
 
 ### Management network
 
@@ -550,6 +558,8 @@ The customer accessible networks \(CMN/CAN/CHN\) provide access from outside the
 - [Customer Accessible Networks](network/customer_accessible_networks/Customer_Accessible_Networks.md)
 - [Externally Exposed Services](network/customer_accessible_networks/Externally_Exposed_Services.md)
 - [Connect to the CMN and CAN](network/customer_accessible_networks/Connect_to_the_CMN_CAN.md)
+- [BI-CAN Aruba/Arista Configuration](network/customer_accessible_networks/bi-can_arista_aruba_config.md)
+- [MetalLB Peering with Arista Edge Router](network/customer_accessible_networks/bi-can_arista_metallb_peering.md)
 - [CAN/CMN with Dual-Spine Configuration](network/customer_accessible_networks/Dual_Spine_Configuration.md)
 - [Troubleshoot CMN Issues](network/customer_accessible_networks/Troubleshoot_CMN_Issues.md)
 
@@ -567,6 +577,8 @@ The central DNS infrastructure provides the structural networking hierarchy and 
 - [DNS](network/dns/DNS.md)
 - [Manage the DNS Unbound Resolver](network/dns/Manage_the_DNS_Unbound_Resolver.md)
 - [Enable `ncsd` on UANs](network/dns/Enable_ncsd_on_UANs.md)
+- [PowerDNS Configuration](network/dns/PowerDNS_Configuration.md)
+- [PowerDNS Migration Guide](network/dns/PowerDNS_migration.md)
 - [Troubleshoot Common DNS Issues](network/dns/Troubleshoot_Common_DNS_Issues.md)
 - [Troubleshoot PowerDNS](network/dns/Troubleshoot_PowerDNS.md)
 
@@ -605,6 +617,7 @@ Spire provides the ability to authenticate nodes and workloads, and to securely 
 - [Troubleshoot Spire Failing to Start on NCNs](spire/Troubleshoot_Spire_Failing_to_Start_on_NCNs.md)
 - [Update Spire Intermediate CA Certificate](spire/Update_Spire_Intermediate_CA_Certificate.md)
 - [Xname Validation](spire/xname_validation.md)
+- [Restore Missing Spire Meta-Data](spire/Restore_Missing_Spire_Metadata.md)
 
 ## Update firmware with FAS
 
