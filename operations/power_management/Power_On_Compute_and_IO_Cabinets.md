@@ -20,7 +20,7 @@ instructions on how to acquire a SAT authentication token.
 
 1. Verify with site management that it is safe to power on the system.
 
-1. If the system does not have Cray EX liquid-cooled cabinets, proceed to [Power On Standard Rack PDU Circuit Breakers](#power-on-standard).
+1. If the system does not have Cray EX liquid-cooled cabinets, proceed to [Power On Standard Rack PDU Circuit Breakers](#power-on-standard-rack-pdu-circuit-breakers).
 
 ### Power On Cray Ex Liquid-Cooled Cabinet Circuit Breakers
 

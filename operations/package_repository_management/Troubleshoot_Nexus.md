@@ -1,10 +1,9 @@
 # Troubleshoot Nexus
 
 General Nexus Troubleshooting Topics
-- [lookup registry.local: no such host](#error-registry-local-no-such-host)
-- [lookup registry.local: Temporary failure in name resolution](#error-registry-local-no-such-host)
-- [initiating layer upload... in registry.local](#error-initiating-layer-upload)
-- [not ready: https://packages.local](#error-not-ready)
+- [lookup registry.local: no such host](#error-lookup-registrylocal-no-such-host)
+- [initiating layer upload... in registry.local](#error-initiating-layer-upload--in-registrylocal-received-unexpected-http-status-200-ok)
+- [not ready: https://packages.local](#error-not-ready-httpspackageslocal)
 
 ### Error lookup registry.local: no such host
 

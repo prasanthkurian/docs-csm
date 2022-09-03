@@ -2,9 +2,9 @@
 This top level procedure outlines common scenarios for moving blades around within an HPE Cray EX system.
 
 Blade movement scenarios:
-* [Scenario 1: Swap locations of two blades](#swap-locations-of-two-blades)
-* [Scenario 2: Move blade into a populated slot](#move-blade-into-a-populated-slot)
-* [Scenario 3: Move blade into an unpopulated slot](#move-blade-into-an-unpopulated-slot)
+* [Scenario 1: Swap locations of two blades](#scenario-1-swap-locations-of-two-blades)
+* [Scenario 2: Move blade into a populated slot](#scenario-2-move-blade-into-a-populated-slot)
+* [Scenario 3: Move blade into an unpopulated slot](#scenario-3-move-blade-into-an-unpopulated-slot)
 
 ## Prerequisites
 -   Knowledge of whether DVS is operating over the Node Management Network (NMN) or the High Speed Network (HSN).

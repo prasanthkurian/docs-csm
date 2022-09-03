@@ -1,16 +1,16 @@
 # Recover from Postgres WAL Event
 
-A WAL event can occur because of lag, network communication, or bandwidth issues. This can cause the PVC hosted by Ceph and mounted inside the container on `/home/postgres/pgdata` to fill and the database to stop running. If no database dump exists, the disk space issue needs to be fixed so that a dump can be taken. Then the dump can be restored to a newly created postgresql cluster. If a dump already exists, skip to [Rebuild the cluster and Restore the data](#rebuild-restore).
+A WAL event can occur because of lag, network communication, or bandwidth issues. This can cause the PVC hosted by Ceph and mounted inside the container on `/home/postgres/pgdata` to fill and the database to stop running. If no database dump exists, the disk space issue needs to be fixed so that a dump can be taken. Then the dump can be restored to a newly created postgresql cluster. If a dump already exists, skip to [Rebuild the cluster and Restore the data](#rebuild-the-cluster-and-restore-the-data).
 
 If no database dump exists and neither option results in a successful dump, then services specific [Disaster Recovery for Postgres](Disaster_Recovery_Postgres.md) will be required.
 
 The Recovery Workflow:
 
- - [Attempt to Recover to a Running Database](#recover-database)
-    - [Option 1: Clear Logs and/or WAL Files](#option1)
-    - [Option 2: Resize the Postgres PVCs](#option2)
- - [Dump the Data](#dump)
- - [Rebuild the Cluster and Restore the Data](#rebuild-restore)
+ - [Attempt to Recover to a Running Database](#attempt-to-recover-to-a-running-database)
+    - [Option 1: Clear Logs and/or WAL Files](#option-1--clear-logs-andor-wal-files)
+    - [Option 2: Resize the Postgres PVCs](#option-2--resize-the-postgres-pvcs)
+ - [Dump the Data](#dump-the-data)
+ - [Rebuild the Cluster and Restore the Data](#rebuild-the-cluster-and-restore-the-data)
 
 ## Attempt to Recover to a Running Database
 
@@ -73,7 +73,7 @@ The following example is based on `cray-smd-postgres`.
     kubectl delete pod -n services -l app.kubernetes.io/name=postgres-operator
     ```
 
-1. Check if the database is running. If it is running, then continue with [Dumping the data](#dump).
+1. Check if the database is running. If it is running, then continue with [Dumping the data](#dump-the-data).
 
     ```bash
     kubectl exec "${POSTGRESQL}-1" -n ${NAMESPACE} -c postgres -it -- psql -U postgres
@@ -234,7 +234,7 @@ The following example is based on `cray-smd-postgres`, where the postgresql `cra
 
 1. In order to persist any Postgres PVC storage volume size changes, it is necessary that this change also be made to the
    customer-managed `customizations.yaml` file. See the Postgres PVC Resize information in the
-   [Post Install Customizations](../CSM_product_management/Post_Install_Customizations.md#postgres_pvc_resize).
+   [Post Install Customizations](../CSM_product_management/Post_Install_Customizations.md#postgres-pvc-resize).
 
 ## Dump the data
 
@@ -283,7 +283,7 @@ If recovery was successful such that a dump could be taken or a dump already exi
 
 The following example restores the dump to the `cray-smd-postgres` cluster.
 
-1. If the client service is not yet scaled to 0, follow the step above to [scale the client service to 0](#scale).
+1. If the client service is not yet scaled to 0, follow the step above to "scale the client service to 0".
 
 1. Delete and re-create the `postgresql` resource (which includes the PVCs).
 

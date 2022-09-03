@@ -4,9 +4,9 @@ The following workflows present a high-level overview of common Boot Orchestrati
 
 The following workflows are included in this section:
 
-  - [Boot and Configure Nodes](#boot-and-configure)
-  - [Reconfigure Nodes](#reconfigure)
-  - [Power Off Nodes](#power-off)
+  - [Boot and Configure Nodes](#boot-and-configure-nodes)
+  - [Reconfigure Nodes](#reconfigure-nodes)
+  - [Power Off Nodes](#power-off-nodes)
 
 ### Boot and Configure Nodes
 
@@ -45,8 +45,7 @@ Mentioned in this workflow:
         "lastUpdated": "2020-09-22T19:56:32Z",
         "layers": [
             {
-                "cloneUrl": "https://api-gw-service-nmn.local/vcs/cray/configmanagement.
-                git",
+                "cloneUrl": "https://api-gw-service-nmn.local/vcs/cray/configmanagement.git",
                 "commit": "01b8083dd89c394675f3a6955914f344b90581e2",
                 "playbook": "site.yaml"
             }

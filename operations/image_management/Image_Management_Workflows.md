@@ -6,8 +6,8 @@ The following workflows are intended to be high-level overviews of image managem
 
 The workflows in this section include:
 
-  * [Create a New Image](#create-image)
-  * [Customize an Image](#customize-image)
+  * [Create a New Image](#create-a-new-image)
+  * [Customize an Image](#customize-an-image)
 
 ### Create a New Image
 

@@ -6,7 +6,7 @@
 
 ### 3.1 SMS test execution
 
-The test in this section requires that the [Cray CLI is configured](#0-cray-command-line-interface) on nodes where the test is executed.
+The test in this section requires that the [Cray CLI is configured](../../operations/configure_cray_cli.md#configure-the-cray-command-line-interface-cray-cli) on nodes where the test is executed.
 
 The following test can be run on any Kubernetes node (any master or worker node, but **not** on the PIT node).
 

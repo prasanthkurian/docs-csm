@@ -12,7 +12,7 @@ ports on the nodes and how to cable the nodes to the management network switches
   * [HPE UAN Cabling](#hpe-uan-cabling)
   * [HPE Apollo 6500 XL645D](#hpe-apollo-6500-xl645d)
   * [HPE Apollo 6500 XL675D](#hpe-apollo-6500-xl675d)
-* [Gigabyte/Intel Hardware](#gigabyte-hardware)
+* [Gigabyte/Intel Hardware](#gigabyteintel-hardware)
   * [Worker Node Cabling](#worker-node-cabling)
   * [Master Node Cabling](#master-node-cabling)
   * [Storage Node Cabling](#storage-node-cabling)
